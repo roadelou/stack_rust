@@ -1,0 +1,26 @@
+// Matching a string. We use an atomic rule to avoid getting garbage newlines
+// inserted.
+string = @{ ( 'a'..'z' | 'A'..'Z' )+ }
+
+// Adds an element to the stack
+push_expr = {
+	"+" ~ string
+}
+
+// Removes an element from the stack
+pop_expr = {
+	"-"
+}
+
+// Parent rule for all expressions. This rule is transparent and not visible in
+// the AST.
+expr = _{
+	push_expr
+	| pop_expr
+}
+
+// Top-most rule, will only match the entire file.
+stack = { SOI ~ ( expr )* ~ EOI }
+
+// Defining whitespaces.
+WHITESPACE = _{ " " | "\t" | "\n" }
